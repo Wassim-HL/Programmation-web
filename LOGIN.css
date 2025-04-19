@@ -1,0 +1,106 @@
+body {
+    background-color: rgb(212, 212, 212);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 50px;
+}
+
+h1 {
+    color: black;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-left: 500px;
+    position: fixed
+}
+
+h3 {
+    text-align: center;
+    color: black;
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+.forme {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+}
+
+.forme form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.forme label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.forme input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 95%;
+    border-radius: 5px;
+}
+
+.envoie {
+    margin-top: 10px;
+    padding-left: 235px;
+    padding-right: 235px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    background-color: green;
+    color: white;
+    border-style: hidden;
+}
+
+.envoie:hover {
+    background-color: darkgreen;
+    cursor: pointer;
+}
+
+.retourButton {
+    display: inline-block;
+    padding-left: 210px;
+    padding-right: 235px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+    border-style: hidden;
+    text-decoration: none;
+}
+
+.retourButton:hover {
+    background-color: darkblue;
+    cursor: pointer;
+}
+
+.cnx {
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    margin-top: 0;
+    /* Supprime la marge pour coller au formulaire */
+}
+
+.role ul {
+    background-color: gray;
+}
+
+.role li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}

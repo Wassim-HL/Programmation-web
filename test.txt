@@ -1,0 +1,443 @@
+    <form action="/test.php" method="get">
+        <label for="fname">First name:</label>
+        <input type="text" if="fname" name="fname"><br><br>
+
+        <label for="lname">Last name:</label>
+        <input type="text" if="lname" name="lname"><br><br>
+
+        <label for="activite">Activite:</label>
+        <input type="text" if="activite" name="activite"><br><br>
+
+        <label for="commentaire">Espace commentaire:</label>
+        <input type="text" if="commentaire" name="commentaire"><br><br>
+        
+        <input type="submit" value="submit">
+    </form>
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>fichier1</title>
+    <link rel="stylesheet" href="ground.css">
+</head>
+
+<body>
+    <?php
+    echo $_GET['lname'] . "  ";
+    echo $_GET['fname'] . " ";
+    echo $_GET['activite'] . " ";
+    echo $_GET['commentaire'] . " ";
+
+    function transformJSON($nomJSON)
+    {
+        $jsonString = file_get_contents($nomJSON . ".json");
+        $data = json_decode($jsonString, true);
+        $data["prenom"] = $_GET['fname'];
+        $data["nom"] = $_GET['lname'];
+        $data["travail"] = $_GET['activite'];
+        $data["commentaires"] = $_GET['commentaire'];
+        $newJsonString = json_encode($data);
+        file_put_contents($nomJSON . ".json", $newJsonString);
+    }
+    transformJSON("message")
+    ?>
+</body>
+
+</html>
+
+
+<form id="monForm"> <!-- Ajout de l'ID ici -->
+        <label for="fname">First name:</label>
+        <input type="text" if="fname" name="fname"><br><br>
+
+        <label for="lname">Last name:</label>
+        <input type="text" if="lname" name="lname"><br><br>
+
+        <label for="activite">Activite:</label>
+        <input type="text" if="activite" name="activite"><br><br>
+
+        <label for="commentaire">Espace commentaire:</label>
+        <input type="text" if="commentaire" name="commentaire"><br><br>
+
+        <input type="submit" value="submit">
+    </form>
+    <hr>
+
+    <h2>Commentaires soumis :</h2>
+    <div id="resultat"></div>
+
+    <script>
+        $(document).ready(function () {
+            $("#monForm").submit(function (event) {
+                event.preventDefault(); // Empêcher le rechargement de la page
+
+                $.ajax({
+                    type: "GET",
+                    url: "test.php",
+                    data: $("#monForm").serialize(),
+                    success: function (response) {
+                        $("#resultat").html(response); // Afficher les données sous le formulaire
+                    }
+                });
+            });
+        });
+    </script>
+
+
+<?php
+    if (!empty($_GET['fname']) && !empty($_GET['lname']) && !empty($_GET['activite']) && !empty($_GET['commentaire'])) {
+        echo "<p><strong>Nom :</strong> " . htmlspecialchars($_GET['lname']) . "</p>";
+        echo "<p><strong>Prénom :</strong> " . htmlspecialchars($_GET['fname']) . "</p>";
+        echo "<p><strong>Activité :</strong> " . htmlspecialchars($_GET['activite']) . "</p>";
+        echo "<p><strong>Commentaire :</strong> " . htmlspecialchars($_GET['commentaire']) . "</p>";
+
+        function transformJSON($nomJSON)
+        {
+            $jsonString = file_get_contents($nomJSON . ".json");
+            $data = json_decode($jsonString, true);
+            $data["prenom"] = $_GET['fname'];
+            $data["nom"] = $_GET['lname'];
+            $data["travail"] = $_GET['activite'];
+            $data["commentaires"] = $_GET['commentaire'];
+            $newJsonString = json_encode($data);
+            file_put_contents($nomJSON . ".json", $newJsonString);
+        }
+        transformJSON("message");
+    }
+    ?>
+
+
+// afficher les recettes methode prof: 
+
+        $cpt = 1;
+        foreach ($datafiltrer as $i => $v) {
+            print("<tr>");
+            // print("<td>" . $cpt . "</td>");
+            print("<td>" . $v['name'] . "</td>");
+            print("<td>" . $v['nameFR'] . "</td>");
+            print("<td>" . $v['Author'] . "</td>");
+            print("<td>");
+            foreach ($v['Without'] as $i3 => $v3) {
+                print($v3);
+            }
+            print("</td>");
+            foreach ($v['ingredients'] as $i2 => $v2) {
+                print("<td>" . $v2['quantity']  . "</td>");
+                print("<td>" . $v2['name']  . "</td>");
+                print("<td>" . $v2['type']  . "</td>");
+                print("</tr>" . "\n");
+            }
+        }
+
+
+        /*foreach ($data as $i => $v) {
+        echo  "prénom  : " . $v["prnom"] . " " . " /  " . "nomdefamille" . " : " . $v["nomdefamille"] . "/ " . "adrs" . " : " . $v["adressedecourriel"] . "/" . "grp" . " : " . $v["groupes"] . "<br>";
+    }*/
+        ?>
+
+appel ajax qui fonctionne :
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Log in</title>
+  <link rel="stylesheet" href="LOGIN.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <?php
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $prenom = $_POST["prenom"];
+    $nom = $_POST["nom"];
+    $email = $_POST["email"];
+    $mdp = $_POST["mdp"];
+
+    ajouterUtilisateur($prenom, $nom, $email, $mdp);
+    header('Location: site.php');
+    exit();
+  }
+
+  function ajouterUtilisateur($prenom, $nom, $email, $mdp)
+  {
+    $jsonString = file_get_contents("LOGIN.json");
+
+    $utilisateurs = json_decode($jsonString, true);
+
+    if (!is_array($utilisateurs)) {
+      $utilisateurs = [];
+    }
+
+    $nouvelUtilisateur = [
+      "prenom" => $prenom,
+      "nom" => $nom,
+      "email" => $email,
+      "mdp" => $mdp
+    ];
+
+    $utilisateurs[] = $nouvelUtilisateur;
+
+    $newJsonString = json_encode($utilisateurs, JSON_PRETTY_PRINT);
+
+    file_put_contents("LOGIN.json", $newJsonString);
+  }
+  ?>
+</head>
+
+<body>
+  <h1>Create an Account</h1>
+  <form action="login.php" method="post" class="forme" id="signupForm">
+    <div class="forme">
+      <label for="nom">Nom: </label>
+      <input type="text" name="nom" id="nom" required />
+    </div>
+    <div class="forme">
+      <label for="prenom">Prénom: </label>
+      <input type="text" name="prenom" id="prenom" required />
+    </div>
+    <div class="forme">
+      <label for="email">E-mail: </label>
+      <input type="email" name="email" id="email" required />
+    </div>
+    <div class="forme">
+      <label for="mdp">Mot de passe: </label>
+      <input type="text" name="mdp" id="mdp" required />
+    </div>
+    <div class="Gender">
+      <input type="radio" name="gender" value="female">Female
+      <input type="radio" name="gender" value="male">Male
+      <input type="radio" name="gender" value="other">Other
+    </div>
+    <div class="forme">
+      <button type="button" onclick="submitForm()">Create</button>
+      <p id="creation"> </p>;
+    </div>
+  </form>
+
+  <h2>Déjà un compte ?</h2>
+  <div class="cnx">
+    <p><a href="connexion.php">Connecte-toi ici</a></p>
+  </div>
+
+  <script>
+    // Fonction de soumission via AJAX
+    function submitForm() {
+      // Récupération des données du formulaire
+      let prenom = $("#prenom").val();
+      let nom = $("#nom").val();
+      let email = $("#email").val();
+      let mdp = $("#mdp").val();
+
+      // Affichage dans la console pour débogage
+      console.log("Form data:", { prenom, nom, email, mdp });
+
+      // Vérifier si l'email existe déjà
+      $.ajax({
+        method: "GET",
+        url: "Siexiste.php",
+        data: { email: email },
+        success: function(response) {
+          console.log("Email check response:", response); // Log de la réponse
+
+          if (response === "true") {
+            // Si l'email existe déjà, affiche un message d'erreur
+            $("#creation").html("<span class='ko'>Cet email est déjà utilisé.</span>");
+          } else {
+            // Si l'email n'existe pas, soumettre le formulaire avec un second appel AJAX
+            $.ajax({
+              method: "POST",
+              url: "login.php",
+              data: {
+                prenom: prenom,
+                nom: nom,
+                email: email,
+                mdp: mdp
+              },
+              success: function() {
+                // Redirection après succès
+                window.location.href = "site.php";
+              },
+              error: function() {
+                // Message d'erreur si quelque chose échoue dans l'envoi
+                $("#creation").html("<span class='ko'>Erreur lors de la création de l'utilisateur.</span>");
+              }
+            });
+          }
+        },
+        error: function() {
+          $("#creation").html("<span class='ko'>Erreur lors de la vérification de l'email.</span>");
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
+
+//appuie sur log in sur sans rechargement :
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MyCuisine</title>
+    <link rel="stylesheet" href="welcom.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>MyCuisine</h1>
+    <ul>
+        <li><a href="contact.asp">Contact</a></li>
+        <li><a href="about.asp">About</a></li>
+        <li><button id="loginButton">Log in</button></li> <!-- Bouton pour le login -->
+    </ul>
+
+    <div2 class="barre-2"> </div2>
+    <h2>Les meilleurs recettes à votre disposition !</h2>
+    <h3>Rejoins-nous vite et profite de notre interface réseaux</h3>
+    <h4>Des idées d'entrée</h4>
+    <div class="images">
+        <img src="entrée-1.jpg" alt="Image 1" style="width:256px;height:256px;">
+        <img src="entrée-4.jpg" alt="Image 2" style="width:256px;height:256px;">
+        <img src="entrée-3.jfif" alt="Image 3" style="width:256px;height:256px;">
+    </div>
+    <h5>Des plats issus de toutes origines</h5>
+    <div class="images">
+        <img src="entrée-1.jpg" alt="Image 1" style="width:256px;height:256px;">
+        <img src="entrée-4.jpg" alt="Image 2" style="width:256px;height:256px;">
+        <img src="entrée-3.jfif" alt="Image 3" style="width:256px;height:256px;">
+    </div>
+
+    <!-- Conteneur pour afficher le contenu de la page de création -->
+    <div id="loginContent"></div>
+
+    <script>
+        $(document).ready(function() {
+            // Lorsque le bouton "Log in" est cliqué
+            $('#loginButton').on('click', function() {
+                // Effectuer une requête Ajax pour charger le contenu de "login.php"
+                $.ajax({
+                    method: 'GET',
+                    url: 'login.php', // L'URL de la page à charger
+                    dataType: 'html', // Type de données attendu
+                    success: function(response) {
+                        // Charger la réponse dans le div #loginContent
+                        $('#loginContent').html(response);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+//log in de base :
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Log in</title>
+    <link rel="stylesheet" href="welcom.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>MyCuisine</h1>
+    <ul>
+        <li><a href="contact.asp">Contact</a></li>
+        <li><a href="about.asp">About</a></li>
+        <li><button id="loginButton">Log in</button></li>
+
+    </ul>
+    <div2 class="barre-2"> </div2>
+    <h2>Les meilleur recettes a votre dipostion !</h2>
+    <h3>Rejoins nous vite et profite notre interface reseaux </h3>
+    <h4>Des idees d'entrée</h4>
+    <div class="images">
+        <img src="entrée-1.jpg" alt="Image 1" style="width:256px;height:256px;">
+        <img src="entrée-4.jpg" alt="Image 2" style="width:256px;height:256px;">
+        <img src="entrée-3.jfif" alt="Image 3" style="width:256px;height:256px;">
+    </div>
+    <h5>Des plats issus de toutes orgines</h5>
+    <div class="images">
+        <img src="entrée-1.jpg" alt="Image 1" style="width:256px;height:256px;">
+        <img src="entrée-4.jpg" alt="Image 2" style="width:256px;height:256px;">
+        <img src="entrée-3.jfif" alt="Image 3" style="width:256px;height:256px;">
+    </div>
+
+    <div id="login"></div>
+    <script>
+        < /body>
+
+
+        <
+        /html>
+
+//connexui cide de base :
+<?php
+
+if (isset($_POST["email"]) && isset($_POST["mdp"])) {
+    $emailID = $_POST["email"];
+    $mdpID = $_POST["mdp"];
+
+    $connexion = verfieConnexion($emailID, $mdpID);
+
+    if ($connexion) {
+        header('Location: site.php');
+        exit();
+    } else {
+        echo "<p style='color: red;'>Erreur : Email ou mot de passe incorrect.</p>";
+    }
+}
+
+function verfieConnexion($emailID, $mdpID)
+{
+    $jsonString = file_get_contents('LOGIN.json');
+    $data  = json_decode($jsonString, true);
+    foreach ($data as $id) {
+        if ($id['email'] == $emailID && $id['mdp'] == $mdpID) {
+            return true;
+        }
+    }
+    return false;
+}
+
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>connexion</title>
+    <link rel="stylesheet" href="connexion.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+
+<body>
+    <h1>Log in</h1>
+    <form action="connexion.php" method="post" class="forme">
+        <div class="forme">
+            <label for="email">E-mail: </label>
+            <input type="email" name="email" id="email" required />
+        </div>
+        <div class="forme">
+            <label for="mdp">Mot de passe: </label>
+            <input type="password" name="mdp" id="mdp" required />
+        </div>
+        <div class="forme">
+            <input type="submit" value="Se connecter" />
+        </div>
+    </form>
+
+
+</body>
+<ul>
+    <li><a href="welcom.php">
+            < Home</a>
+    </li>
+
+
+</ul>
+
+</html>
